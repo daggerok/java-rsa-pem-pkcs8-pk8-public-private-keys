@@ -63,7 +63,7 @@ public class Main {
 
     log.info("Public key algorithm: " + rsaPublicKey.getAlgorithm());
     log.info("Public key format: " + rsaPublicKey.getFormat());
-    log.info(publicKey);
+    log.info("Public key body:\n" + publicKey);
 
     // private key
     var privateKeyPath = arguments.getOrDefault("--private", "private_key.pem");
@@ -76,11 +76,12 @@ public class Main {
     // log.info("  => modulus: " + rsaPrivateKey.getModulus());
     // log.info("  => exponent: " + rsaPrivateKey.getPrivateExponent());
     // log.info("  => params: " + rsaPrivateKey.getParams());
-    log.info(privateKey);
+    log.info("Private key body:\n" + privateKey);
   }
 
   @SneakyThrows
   static String getPublicKey(String publicKeyPath, Charset systemCharset, String lineSeparator) {
+    log.info("Public key path: " + publicKeyPath);
     var pathToPublic = Paths.get(publicKeyPath);
     var publicKeyRawContent = Files.readString(pathToPublic, systemCharset); // SneakyThrows
     return /* var publicKey = */ publicKeyRawContent // fix Illegal base64 characters...
@@ -98,6 +99,7 @@ public class Main {
 
   @SneakyThrows
   static String getPrivateKey(String privateKeyPath, Charset systemCharset, String lineSeparator) {
+    log.info("Private key path: " + privateKeyPath);
     var pathToPrivate = Paths.get(privateKeyPath);
     var privateKeyRawContent = Files.readString(pathToPrivate, systemCharset); // SneakyThrows
     return /* var privateKey = */ privateKeyRawContent.replaceAll("-----BEGIN PRIVATE KEY-----", "")
