@@ -6,12 +6,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>daggerok</groupId>
   <artifactId>java-rsa-pem-pkcs8-pk8-public-private-keys</artifactId>
-  <version>2.0-SNAPSHOT</version>
+  <version>3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
     <module>consume-keys-files</module>
     <module>aes-encryption</module>
+    <module>rsa-key-pair-generation</module>
   </modules>
 
   <properties>

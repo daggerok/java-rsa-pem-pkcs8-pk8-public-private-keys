@@ -30,7 +30,7 @@ public class Main {
                        "%1$tF %1$tT | %4$-7s | %5$s %n");
   }
 
-  private static final Logger log = Logger.getGlobal();
+  static final Logger log = Logger.getGlobal();
 
   /*
    * ./mvnw compile ; java -cp consume-keys-files/target/classes consumekeysfiles.Main --public=$(pwd)/consume-keys-files/public_key.pem --private=`pwd`/consume-keys-files/private_key.pem
