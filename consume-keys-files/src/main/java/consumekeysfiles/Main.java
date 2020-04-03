@@ -41,8 +41,8 @@ public class Main {
     // environment
     var systemCharset = Charset.defaultCharset(); // StandardCharsets.UTF_8
     var lineSeparator = System.lineSeparator();
-    log.info("line separator: '" + lineSeparator + "'");
     log.info("charset: '" + systemCharset.toString() + "'");
+    log.info("line separator: '" + lineSeparator + "'");
     // var lineSeparator = System.getProperty("os.name").toLowerCase().contains("win") ? "\\r\\n" : "\\n";
 
     // infrastructure
