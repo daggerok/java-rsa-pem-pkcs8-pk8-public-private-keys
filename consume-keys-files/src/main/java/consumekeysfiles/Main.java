@@ -73,9 +73,6 @@ public class Main {
     // log.info(rsaPrivateKey.toString());
     log.info("Private key algorithm: " + rsaPrivateKey.getAlgorithm());
     log.info("Private key format: " + rsaPrivateKey.getFormat());
-    // log.info("  => modulus: " + rsaPrivateKey.getModulus());
-    // log.info("  => exponent: " + rsaPrivateKey.getPrivateExponent());
-    // log.info("  => params: " + rsaPrivateKey.getParams());
     log.info("Private key body:\n" + privateKey);
   }
 
