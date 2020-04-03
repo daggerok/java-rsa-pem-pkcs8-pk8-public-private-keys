@@ -81,7 +81,7 @@ public class Main {
     log.info("Public key path: " + publicKeyPath);
     var pathToPublic = Paths.get(publicKeyPath);
     var publicKeyRawContent = Files.readString(pathToPublic, systemCharset); // SneakyThrows
-    return /* var publicKey = */ publicKeyRawContent // fix Illegal base64 characters...
+    return /* var publicKey = */ publicKeyRawContent// fix Illegal base64 characters...
                                                     .replaceAll("-----BEGIN PUBLIC KEY-----", "")
                                                     .replaceAll("-----END PUBLIC KEY-----", "")
                                                     // .replaceAll("$|\n|\r\n|\n |\r\n | \n| \r\n", "")
