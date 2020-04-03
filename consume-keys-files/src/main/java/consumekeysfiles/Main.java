@@ -33,7 +33,8 @@ public class Main {
   private static final Logger log = Logger.getGlobal();
 
   /*
-   * ./mvnw compile
+   * ./mvnw compile ; java -cp consume-keys-files/target/classes consumekeysfiles.Main --public=$(pwd)/consume-keys-files/public_key.pem --private=`pwd`/consume-keys-files/private_key.pem
+   *
    * java -cp target/classes consumekeysfiles.Main --public=$(pwd)/public_key.pem --private=`pwd`/private_key.pem
    */
   @SneakyThrows

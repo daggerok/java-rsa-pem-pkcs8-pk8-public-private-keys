@@ -22,16 +22,7 @@ jobs:
         uses: stCarolas/setup-maven@v3
         with:
           maven-version: 3.6.3
-      - name: Maven build
-        run: ./mvnw clean compile
-      - name: Run
-        run: |
-          openssl genrsa -out consume-keys-files/target/private_rsa_key.pem 4096
-          openssl rsa -pubout -in consume-keys-files/target/private_rsa_key.pem -out consume-keys-files/target/public_key.pem
-          openssl pkcs8 -topk8 -in consume-keys-files/target/private_rsa_key.pem -inform pem -out consume-keys-files/target/private_key.pem -outform pem -nocrypt
-
-          java -cp consume-keys-files/target/classes consumekeysfiles.Main --public=consume-keys-files/target/public_key.pem --private=./consume-keys-files/target/private_key.pem
-      # https://github.com/actions/cache/blob/master/examples.md#java---maven
+    # https://github.com/actions/cache/blob/master/examples.md#java---maven
       - name: Cache maven
         uses: actions/cache@v1
         with:
@@ -39,6 +30,19 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - name: Maven build
+        run: ./mvnw clean compile
+      - name: Test consume-keys-files
+        run: |
+          openssl genrsa -out consume-keys-files/target/private_rsa_key.pem 4096
+          openssl rsa -pubout -in consume-keys-files/target/private_rsa_key.pem -out consume-keys-files/target/public_key.pem
+          openssl pkcs8 -topk8 -in consume-keys-files/target/private_rsa_key.pem -inform pem -out consume-keys-files/target/private_key.pem -outform pem -nocrypt
+          java -cp consume-keys-files/target/classes consumekeysfiles.Main --public=consume-keys-files/target/public_key.pem --private=./consume-keys-files/target/private_key.pem
+      - name: Test aes-encryption
+        run: |
+          java -cp aes-encryption/target/classes aesencryption.Main --encrypt=ololo
+          java -cp $GITHUB_WORKSPACE/aes-encryption/target/classes aesencryption.Main --decrypt=9T3d2eg/O8ntHYO1UXdDZg==
+          java -cp ${GITHUB_WORKSPACE}/aes-encryption/target/classes aesencryption.Main --encrypt=ololo --decrypt=9T3d2eg/O8ntHYO1UXdDZg==
   build-windows:
     strategy:
       matrix:
@@ -60,14 +64,6 @@ jobs:
       - name: Run maven build
         shell: cmd
         run: call mvnw.cmd clean compile -Dfile.encoding="UTF-8"
-      - name: Run java app
-        shell: cmd
-        run: |
-          @chcp 65001>nul
-          echo "Do not generate with openssl on Windows! It's doesn't work!"
-          type %GITHUB_WORKSPACE%\consume-keys-files\public_key.pem
-          type %GITHUB_WORKSPACE%\consume-keys-files\private_key.pem
-          java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\consume-keys-files\target\classes consumekeysfiles.Main --private=%GITHUB_WORKSPACE%\consume-keys-files\private_key.pem --public=%GITHUB_WORKSPACE%\consume-keys-files\public_key.pem
       - name: Cache maven
         uses: actions/cache@v1
         with:
@@ -75,3 +71,18 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - name: Test consume-keys-files
+        shell: cmd
+        run: |
+          @chcp 65001>nul
+          echo "Do not generate with openssl on Windows! It's doesn't work!"
+          type %GITHUB_WORKSPACE%\consume-keys-files\public_key.pem
+          type %GITHUB_WORKSPACE%\consume-keys-files\private_key.pem
+          java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\consume-keys-files\target\classes consumekeysfiles.Main --private=%GITHUB_WORKSPACE%\consume-keys-files\private_key.pem --public=%GITHUB_WORKSPACE%\consume-keys-files\public_key.pem
+      - name: Test aes-encryption
+        shell: cmd
+        run: |
+          @chcp 65001>nul
+          java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\aes-encryption\target\classes aesencryption.Main --encrypt=ololo
+          java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\aes-encryption\target\classes aesencryption.Main --decrypt=9T3d2eg/O8ntHYO1UXdDZg==
+          java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\aes-encryption\target\classes aesencryption.Main --encrypt=ololo --decrypt=9T3d2eg/O8ntHYO1UXdDZg==
