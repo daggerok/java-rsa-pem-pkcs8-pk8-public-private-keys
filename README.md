@@ -25,7 +25,7 @@ java -cp aes-encryption/target/classes aesencryption.Main --decrypt=9T3d2eg/O8nt
 
 [AES in java](https://www.devglan.com/corejava/java-aes-encypt-decrypt)
 
-## aes-encryption
+## rsa-key-pair-generation
 
 ```bash
 ./mvnw clean compile -f rsa-key-pair-generation
