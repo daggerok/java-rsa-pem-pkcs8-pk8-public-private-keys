@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script type="application/javascript" defer src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/2.3.1/jsencrypt.min.js"></script>
+  <title>Ignore this shit...</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    main {
+      padding-top: 5em;
+      /*height: 100%;*/
+      width: 100%;
+      margin: auto;
+      display: flex;
+      /*flex-direction: row;*/
+      flex-direction: column;
+    }
+
+    main div {
+      margin: auto;
+      display: flex;
+      flex-direction: row;
+    }
+
+    #output {
+      max-width: 90%;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <div>
+    <label for="username">username</label>
+    <input id="username" type="text"/>
+  </div>
+  <div>
+    <label for="password">password</label>
+    <input id="password" type="password"/>
+  </div>
+  <p id="output"></p>
+</main>
+<script>
+  document.addEventListener('DOMContentLoaded', function onDOMContentLoaded() {
+    const usernameElement = document.querySelector('#username');
+    const passwordElement = document.querySelector('#password');
+
+    const onUpdate = e => {
+      if (e.code === 'Enter') {
+        usernameElement.value = '';
+        passwordElement.value = '';
+        return;
+      }
+      // const publicKey = '';
+      const publicKey = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCcffJaczoJd5cQ/mlfQ9Sbbp9vnQEMZlbknTHkR2NWtEgS+dRciuKLQudLfWFbLzWDLWNYwCFjdst8J0rZB41sb4bMGPPgljERkecm2SyhzdjndoBf6/nnsGtN5nwbM54lCmGwkm4CDE5fZBWW8xB9z3z37hlnwByv6sxuw97QJwIDAQAB';
+      const RSAEncrypt = new JSEncrypt();
+      RSAEncrypt.setPublicKey(publicKey);
+      document.querySelector('#output').textContent =
+        usernameElement.value + ' / ' + RSAEncrypt.encrypt(passwordElement.value);
+    };
+
+    const eventNames = ['input', 'keydown'];
+
+    function onEvent(eventName) {
+      usernameElement.addEventListener(eventName, onUpdate, false);
+      passwordElement.addEventListener(eventName, onUpdate, false);
+    }
+
+    eventNames.forEach(onEvent);
+  }, false);
+</script>
+</body>
+</html>
