@@ -1,5 +1,17 @@
 # java certificates and public / private keys [![CI](https://github.com/daggerok/java-rsa-pem-pkcs8-pk8-public-private-keys/workflows/CI/badge.svg)](https://github.com/daggerok/java-rsa-pem-pkcs8-pk8-public-private-keys/actions)
 
+## rsa-asymmetric-cryptography
+
+TODO...
+
+```bash
+./mvnw -f rsa-asymmetric-cryptography clean package dependency:copy-dependencies -DincludeScope=runtime
+java -cp "rsa-asymmetric-cryptography/target/dependency/*:rsa-asymmetric-cryptography/target/classes" daggerok.Main  
+```
+
+* [link 1](https://stackoverflow.com/questions/8310539/how-to-copy-dependencies-jars-without-test-jars-to-a-directory-using-maven/61456534#61456534)
+* [link 2](https://mkyong.com/java/java-asymmetric-cryptography-example/)
+
 ## consume-keys-files
 
 ```bash

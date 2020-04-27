@@ -1,6 +1,32 @@
 name: CI
 on: [push]
 jobs:
+
+  unix-rsa-asymmetric-cryptography:
+    strategy:
+      matrix:
+        java: [11]
+        maven: [3.6.3]
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    name: rsa-asymmetric-cryptography on java-${{ matrix.java }}, maven ${{ matrix.maven }} and ${{ matrix.os }} os
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.java }}
+    - uses: stCarolas/setup-maven@v3
+      with:
+        maven-version: ${{ matrix.maven }}
+    - uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-java-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-java-
+    - run: mvn -f rsa-asymmetric-cryptography clean dependency:copy-dependencies -DincludeScope=runtime compile
+    - run: java -Dfile.encoding="UTF-8" -cp "rsa-asymmetric-cryptography/target/dependency/*:rsa-asymmetric-cryptography/target/classes" daggerok.Main Hello, World!
+
   build-unix:
     strategy:
       matrix:
@@ -10,41 +36,42 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Java ${{ matrix.java }} on ${{ matrix.os }}
     steps:
-      - name: Git clone
-        uses: actions/checkout@v1
-      - name: Setup java
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ matrix.java }}
-      # https://github.com/marketplace/actions/setup-maven
-      - name: Set up maven
-        uses: stCarolas/setup-maven@v3
-        with:
-          maven-version: 3.6.3
+    - name: Git clone
+      uses: actions/checkout@v1
+    - name: Setup java
+      uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.java }}
+    # https://github.com/marketplace/actions/setup-maven
+    - name: Set up maven
+      uses: stCarolas/setup-maven@v3
+      with:
+        maven-version: 3.6.3
     # https://github.com/actions/cache/blob/master/examples.md#java---maven
-      - name: Cache maven
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Maven build
-        run: ./mvnw clean compile
-      - name: Test consume-keys-files
-        run: |
-          openssl genrsa -out consume-keys-files/target/private_rsa_key.pem 4096
-          openssl rsa -pubout -in consume-keys-files/target/private_rsa_key.pem -out consume-keys-files/target/public_key.pem
-          openssl pkcs8 -topk8 -in consume-keys-files/target/private_rsa_key.pem -inform pem -out consume-keys-files/target/private_key.pem -outform pem -nocrypt
-          java -cp consume-keys-files/target/classes consumekeysfiles.Main --public=consume-keys-files/target/public_key.pem --private=./consume-keys-files/target/private_key.pem
-      - name: Test aes-encryption
-        run: |
-          java -cp aes-encryption/target/classes aesencryption.Main --encrypt=ololo
-          java -cp $GITHUB_WORKSPACE/aes-encryption/target/classes aesencryption.Main --decrypt=9T3d2eg/O8ntHYO1UXdDZg==
-          java -cp ${GITHUB_WORKSPACE}/aes-encryption/target/classes aesencryption.Main --encrypt=ololo --decrypt=9T3d2eg/O8ntHYO1UXdDZg==
-      - name: Test rsa-key-pair-generation
-        run: |
-          java -cp ${GITHUB_WORKSPACE}/rsa-key-pair-generation/target/classes rsakeypairgeneration.Main --keySize=8126
+    - name: Cache maven
+      uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Maven build
+      run: ./mvnw clean compile
+    - name: Test consume-keys-files
+      run: |
+        openssl genrsa -out consume-keys-files/target/private_rsa_key.pem 4096
+        openssl rsa -pubout -in consume-keys-files/target/private_rsa_key.pem -out consume-keys-files/target/public_key.pem
+        openssl pkcs8 -topk8 -in consume-keys-files/target/private_rsa_key.pem -inform pem -out consume-keys-files/target/private_key.pem -outform pem -nocrypt
+        java -cp consume-keys-files/target/classes consumekeysfiles.Main --public=consume-keys-files/target/public_key.pem --private=./consume-keys-files/target/private_key.pem
+    - name: Test aes-encryption
+      run: |
+        java -cp aes-encryption/target/classes aesencryption.Main --encrypt=ololo
+        java -cp $GITHUB_WORKSPACE/aes-encryption/target/classes aesencryption.Main --decrypt=9T3d2eg/O8ntHYO1UXdDZg==
+        java -cp ${GITHUB_WORKSPACE}/aes-encryption/target/classes aesencryption.Main --encrypt=ololo --decrypt=9T3d2eg/O8ntHYO1UXdDZg==
+    - name: Test rsa-key-pair-generation
+      run: |
+        java -cp ${GITHUB_WORKSPACE}/rsa-key-pair-generation/target/classes rsakeypairgeneration.Main --keySize=8126
+
   build-windows:
     strategy:
       matrix:
@@ -53,43 +80,43 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Java ${{ matrix.java }} on ${{ matrix.os }}
     steps:
-      - name: Git clone
-        uses: actions/checkout@v1
-      - name: Setup java
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ matrix.java }}
-      - name: Set up maven
-        uses: stCarolas/setup-maven@v3
-        with:
-          maven-version: 3.6.3
-      - name: Run maven build
-        shell: cmd
-        run: call mvnw.cmd clean compile -Dfile.encoding="UTF-8"
-      - name: Cache maven
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Test consume-keys-files
-        shell: cmd
-        run: |
-          @chcp 65001>nul
-          echo "Do not generate with openssl on Windows! It's doesn't work!"
-          type %GITHUB_WORKSPACE%\consume-keys-files\public_key.pem
-          type %GITHUB_WORKSPACE%\consume-keys-files\private_key.pem
-          java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\consume-keys-files\target\classes consumekeysfiles.Main --private=%GITHUB_WORKSPACE%\consume-keys-files\private_key.pem --public=%GITHUB_WORKSPACE%\consume-keys-files\public_key.pem
-      - name: Test aes-encryption
-        shell: cmd
-        run: |
-          @chcp 65001>nul
-          java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\aes-encryption\target\classes aesencryption.Main --encrypt=ololo
-          java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\aes-encryption\target\classes aesencryption.Main --decrypt=9T3d2eg/O8ntHYO1UXdDZg==
-          java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\aes-encryption\target\classes aesencryption.Main --encrypt=ololo --decrypt=9T3d2eg/O8ntHYO1UXdDZg==
-      - name: Test rsa-key-pair-generation
-        shell: cmd
-        run: |
-          @chcp 65001>nul
-          java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\rsa-key-pair-generation\target\classes rsakeypairgeneration.Main --keySize=8196
+    - name: Git clone
+      uses: actions/checkout@v1
+    - name: Setup java
+      uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.java }}
+    - name: Set up maven
+      uses: stCarolas/setup-maven@v3
+      with:
+        maven-version: 3.6.3
+    - name: Run maven build
+      shell: cmd
+      run: call mvnw.cmd clean compile -Dfile.encoding="UTF-8"
+    - name: Cache maven
+      uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Test consume-keys-files
+      shell: cmd
+      run: |
+        @chcp 65001>nul
+        echo "Do not generate with openssl on Windows! It's doesn't work!"
+        type %GITHUB_WORKSPACE%\consume-keys-files\public_key.pem
+        type %GITHUB_WORKSPACE%\consume-keys-files\private_key.pem
+        java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\consume-keys-files\target\classes consumekeysfiles.Main --private=%GITHUB_WORKSPACE%\consume-keys-files\private_key.pem --public=%GITHUB_WORKSPACE%\consume-keys-files\public_key.pem
+    - name: Test aes-encryption
+      shell: cmd
+      run: |
+        @chcp 65001>nul
+        java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\aes-encryption\target\classes aesencryption.Main --encrypt=ololo
+        java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\aes-encryption\target\classes aesencryption.Main --decrypt=9T3d2eg/O8ntHYO1UXdDZg==
+        java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\aes-encryption\target\classes aesencryption.Main --encrypt=ololo --decrypt=9T3d2eg/O8ntHYO1UXdDZg==
+    - name: Test rsa-key-pair-generation
+      shell: cmd
+      run: |
+        @chcp 65001>nul
+        java -Dfile.encoding="UTF-8" -cp %GITHUB_WORKSPACE%\rsa-key-pair-generation\target\classes rsakeypairgeneration.Main --keySize=8196
