@@ -15,12 +15,12 @@ public class Args {
 
   String[] args;
 
-  public boolean hasCommand(String key) {
-    Optional.ofNullable(key)
+  public boolean has(String command) {
+    Optional.ofNullable(command)
             .filter(Predicate.not(String::isBlank))
-            .orElseThrow(Err.reThrow.apply("key may not be null or empty"));
+            .orElseThrow(Err.reThrow.apply("command may not be null or empty"));
     return Arrays.asList(Objects.requireNonNull(args, "args may not be null"))
-                 .contains(key);
+                 .contains(command);
   }
 
   public Optional<String> find(String query) {
