@@ -25,7 +25,13 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-java-
     - run: mvn -f rsa-asymmetric-cryptography clean dependency:copy-dependencies -DincludeScope=runtime compile
-    - run: java -Dfile.encoding="UTF-8" -cp "rsa-asymmetric-cryptography/target/dependency/*:rsa-asymmetric-cryptography/target/classes" daggerok.Main Hello, World!
+    - run: java -Dfile.encoding="UTF-8" -cp "rsa-asymmetric-cryptography/target/dependency/*:rsa-asymmetric-cryptography/target/classes" daggerok.Main generate and write
+    - run: java -Dfile.encoding="UTF-8" -cp "rsa-asymmetric-cryptography/target/dependency/*:rsa-asymmetric-cryptography/target/classes" daggerok.Main read
+    - run: |
+        export encrypted=`java -Dfile.encoding="UTF-8" -cp "rsa-asymmetric-cryptography/target/dependency/*:rsa-asymmetric-cryptography/target/classes" daggerok.Main daggerok.Main encrypt --payload="Hello, World"`
+        echo "encrypted value is $encrypted"
+        export decrypted=`java -Dfile.encoding="UTF-8" -cp "rsa-asymmetric-cryptography/target/dependency/*:rsa-asymmetric-cryptography/target/classes" daggerok.Main daggerok.Main decrypt --payload="$encrypted"`
+        echo "decrypted value is $decrypted"
 
   build-unix:
     strategy:

@@ -6,7 +6,16 @@ TODO...
 
 ```bash
 ./mvnw -f rsa-asymmetric-cryptography clean package dependency:copy-dependencies -DincludeScope=runtime
-java -cp "rsa-asymmetric-cryptography/target/dependency/*:rsa-asymmetric-cryptography/target/classes" daggerok.Main  
+java -cp "rsa-asymmetric-cryptography/target/dependency/*:rsa-asymmetric-cryptography/target/classes" daggerok.Main
+
+java -cp "rsa-asymmetric-cryptography/target/dependency/*:rsa-asymmetric-cryptography/target/classes" daggerok.Main generate and write
+java -cp "rsa-asymmetric-cryptography/target/dependency/*:rsa-asymmetric-cryptography/target/classes" daggerok.Main read
+
+export encrypted=`java -cp "rsa-asymmetric-cryptography/target/dependency/*:rsa-asymmetric-cryptography/target/classes" daggerok.Main encrypt --payload="Hello, World"`
+echo "encrypted value is $encrypted"
+
+export decrypted=`java -cp "rsa-asymmetric-cryptography/target/dependency/*:rsa-asymmetric-cryptography/target/classes" daggerok.Main decrypt --payload="$encrypted"`
+echo "decrypted value is $decrypted"
 ```
 
 * [link 1](https://stackoverflow.com/questions/8310539/how-to-copy-dependencies-jars-without-test-jars-to-a-directory-using-maven/61456534#61456534)
