@@ -2,16 +2,6 @@ package daggerok;
 
 public class Main {
 
-  private static void usage() {
-    System.out.println("\ndaggerok.Main {command} [--{query}={value}]\n");
-    System.out.println("examples:\n");
-    System.out.println("\tdaggerok.Main generate");
-    System.out.println("\tdaggerok.Main generate and write");
-    System.out.println("\tdaggerok.Main generate and write --publicKey=/path/to/public.key");
-    System.out.println("\tdaggerok.Main read");
-    System.out.println("\tdaggerok.Main encrypt --payload=\"Hello, World\"\n");
-  }
-
   public static void main(String[] args) {
 
     var arguments = Args.of(args);
@@ -56,5 +46,15 @@ public class Main {
     if (arguments.has("decrypt")) query
         .map(value -> KeyService.decrypt(value, publicKeyPath))
         .ifPresent(System.out::println);
+  }
+
+  private static void usage() {
+    System.out.println("\ndaggerok.Main {command} [--{query}={value}]\n");
+    System.out.println("examples:\n");
+    System.out.println("\tdaggerok.Main generate");
+    System.out.println("\tdaggerok.Main generate and write");
+    System.out.println("\tdaggerok.Main generate and write --publicKey=/path/to/public.key");
+    System.out.println("\tdaggerok.Main read");
+    System.out.println("\tdaggerok.Main encrypt --payload=\"Hello, World\"\n");
   }
 }
