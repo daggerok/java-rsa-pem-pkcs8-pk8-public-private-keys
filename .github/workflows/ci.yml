@@ -33,14 +33,14 @@ jobs:
         export decrypted=`java -Dfile.encoding="UTF-8" -cp "rsa-asymmetric-cryptography/target/dependency/*:rsa-asymmetric-cryptography/target/classes" daggerok.Main daggerok.Main decrypt --payload="$encrypted"`
         echo "decrypted value is $decrypted"
 
-  build-unix:
+  consume-keys-files-unix:
     strategy:
       matrix:
         # https://github.com/actions/setup-java#matrix-testing
         os: [ubuntu-latest, macos-latest]
         java: [11]
     runs-on: ${{ matrix.os }}
-    name: Java ${{ matrix.java }} on ${{ matrix.os }}
+    name: consume-keys-files with java-${{ matrix.java }} on ${{ matrix.os }}
     steps:
     - name: Git clone
       uses: actions/checkout@v1
@@ -78,13 +78,13 @@ jobs:
       run: |
         java -cp ${GITHUB_WORKSPACE}/rsa-key-pair-generation/target/classes rsakeypairgeneration.Main --keySize=8126
 
-  build-windows:
+  consume-keys-files-windows:
     strategy:
       matrix:
         java: [11]
         os: [windows-latest]
     runs-on: ${{ matrix.os }}
-    name: Java ${{ matrix.java }} on ${{ matrix.os }}
+    name: consume-keys-files with java-${{ matrix.java }} on ${{ matrix.os }}
     steps:
     - name: Git clone
       uses: actions/checkout@v1
