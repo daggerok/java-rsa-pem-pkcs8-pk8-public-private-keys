@@ -10,11 +10,10 @@ import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.Optional;
 
 /**
  * Generate and parse keys.
- *
+ * <p>
  * https://docs.oracle.com/javase/8/docs/api/java/security/spec/PKCS8EncodedKeySpec.html
  * https://docs.oracle.com/javase/8/docs/api/java/security/spec/X509EncodedKeySpec.html
  */

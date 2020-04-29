@@ -12,6 +12,7 @@ import java.util.function.Supplier;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Err {
+
   public static final Function<String, Supplier<RuntimeException>>
       reThrow = message -> () -> new RuntimeException(message);
 
